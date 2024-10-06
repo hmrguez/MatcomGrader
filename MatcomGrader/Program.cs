@@ -7,7 +7,7 @@ var testPath = Path.Combine(basePath, "AutoGrader");
 var baseFilePath = Path.Combine(solutionsPath, "_base.cs");
 var resultPath = Path.Combine(basePath, "results.md");
 
-string[] headers = ["Name", "Passed", "Exceptions", "Timeout"];
+string[] headers = ["Name", "Passed", "Wrong", "Exceptions", "Timeout"];
 
 var mdWriter = new MarkdownWriter(resultPath, headers);
 
