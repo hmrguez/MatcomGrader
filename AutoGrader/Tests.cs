@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Common;
 using NUnit.Framework.Interfaces;
 
@@ -57,7 +58,7 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
     private static readonly string[] MdHeaders = ["Name", "Passed", "Wrong", "Exceptions", "Timeouts"];
     private static readonly string Name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE")!;
 
-    private static readonly TProblem Problem = new();
+    protected static readonly TProblem Problem = new();
 
 
     // Counters to track test outcomes
@@ -85,7 +86,6 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
             Assert.Fail("TIMEOUT");
         }
     }
-
 
     private static IEnumerable<TestCaseData> GetTestCases()
     {

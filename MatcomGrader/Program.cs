@@ -17,14 +17,12 @@ File.Delete(Path.Combine(testPath, "Solution.cs"));
 
 foreach (var filePath in Directory.GetFiles(solutionsPath))
 {
-    
-    
     var fileName = Path.GetFileName(filePath);
-    
-    if(fileName.StartsWith("_base.cs") || fileName.StartsWith('.'))
+
+    if (fileName.StartsWith("_base.cs") || fileName.StartsWith('.'))
         continue;
 
-    
+
     var destinationPath = Path.Combine(testPath, fileName);
     File.Copy(filePath, destinationPath, overwrite: true);
 
@@ -45,6 +43,8 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     // Handle output or errors if needed
     var output = process.StandardOutput.ReadToEnd();
     var error = process.StandardError.ReadToEnd();
+
+    Console.WriteLine("Student: " + fileName + "\n" +  output);
 
     // Delete the copied file after testing
     File.Delete(destinationPath);
