@@ -143,6 +143,28 @@ public class MarkdownWriter
     }
 
     /// <summary>
+    /// Reads the last non-empty row from the markdown file
+    /// </summary>
+    public string ReadLastRow()
+    {
+        string lastLine = null;
+        if (File.Exists(_filePath))
+        {
+            var lines = File.ReadAllLines(_filePath);
+            for (int i = lines.Length - 1; i >= 0; i--)
+            {
+                if (!string.IsNullOrWhiteSpace(lines[i]))
+                {
+                    lastLine = lines[i];
+                    break;
+                }
+            }
+        }
+
+        return lastLine;
+    }
+
+    /// <summary>
     /// Gets the headers of the markdown table.
     /// </summary>
     public string[] Headers => _headers.ToArray();
