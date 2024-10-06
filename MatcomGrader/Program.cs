@@ -21,7 +21,7 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     
     var fileName = Path.GetFileName(filePath);
     
-    if(fileName.StartsWith("_base.cs") || fileName.StartsWith("."))
+    if(fileName.StartsWith("_base.cs") || fileName.StartsWith('.'))
         continue;
 
     
@@ -52,7 +52,7 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     var lastRow = mdWriter.ReadLastRow();
     if (!lastRow.Contains(fileName))
     {
-        var toWrite = headers.Select(x => "-").ToArray();
+        var toWrite = headers.Select(_ => "-").ToArray();
         toWrite[0] = fileName;
         mdWriter.AddRow(toWrite);
     }
