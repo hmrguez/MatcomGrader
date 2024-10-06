@@ -1,20 +1,24 @@
 using Common;
 using Exam;
 using Grader;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using NUnit.Framework.Interfaces;
 
 namespace AutoGrader;
 
 [TestFixture]
 public class Tests
 {
+    // Configuration Constants
+    private const int NumberOfCases = 10;
+    private const int RandomSeed = 10;
+    private const string MdPath = "../../../../results.md";
+    private static readonly string[] MdHeaders = ["Name", "Passed", "Exceptions", "Timeouts"];
+
+
     // Counters to track test outcomes
-    private int _passedCount = 0;
-    private int _exceptionCount = 0;
-    private int _timeoutCount = 0;
+    private int _passedCount;
+    private int _exceptionCount;
+    private int _timeoutCount;
 
     [TearDown]
     public void TearDown()
@@ -28,11 +32,11 @@ public class Tests
 
         switch (outcome)
         {
-            case NUnit.Framework.Interfaces.TestStatus.Passed:
+            case TestStatus.Passed:
                 _passedCount++;
                 break;
-            case NUnit.Framework.Interfaces.TestStatus.Failed:
-                if (message.Contains("Timeout"))
+            case TestStatus.Failed:
+                if (message!.Contains("Timeout"))
                 {
                     _timeoutCount++;
                 }
@@ -60,10 +64,9 @@ public class Tests
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        const string mdPath = "../../../../results.md";
-        var mdwriter = new MarkdownWriter(mdPath, new[] { "Name", "Passed", "Exceptions", "Timeouts" });
-        
-        mdwriter.AddRow("Jose", _passedCount.ToString(), _exceptionCount.ToString(), _timeoutCount.ToString());
+        var writer = new MarkdownWriter(MdPath, MdHeaders);
+
+        writer.AddRow("Jose", _passedCount.ToString(), _exceptionCount.ToString(), _timeoutCount.ToString());
 
         Console.WriteLine("Test summary written to results.md");
     }
@@ -74,11 +77,7 @@ public class Tests
     /// <returns>An enumerable of TestCaseData, each containing input and expected output.</returns>
     public static IEnumerable<TestCaseData> GetTestCases()
     {
-        // Define seed and number of test cases
-        var seed = 42;
-        var numberOfCases = 10;
-
-        foreach (var testCase in Generator.GenerateTestCases(seed, numberOfCases))
+        foreach (var testCase in Generator.GenerateTestCases(RandomSeed, NumberOfCases))
         {
             yield return new TestCaseData(testCase[0], testCase[1])
                 .SetName($"Input_{testCase[0]}_Expected_{testCase[1]}");
