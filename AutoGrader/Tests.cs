@@ -14,7 +14,7 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
         // Retrieve the category of the current test
         var categoryList = TestContext.CurrentContext.Test.Properties["Category"] as List<object>;
         var category = (categoryList != null && categoryList.Count > 0) ? categoryList[0] as string : "Uncategorized";
-        
+
         // Initialize counts for this category if not already present
         if (!_countsByCategory.ContainsKey(category))
         {
@@ -41,8 +41,6 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
                     counts.ExceptionCount++;
                 break;
         }
-
-        Console.WriteLine();
     }
 
     [OneTimeTearDown]
@@ -75,7 +73,7 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
             }
 
             // Write flat results
-            var mdHeaders = new[] { "Name", "✅ Passed", "⭕️Wrong", "‼️Exceptions", "⏰Timeouts" };
+            var mdHeaders = new[] { "Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
             var writer = new MarkdownWriter(MdPath, mdHeaders);
             writer.AddRow(Name, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
                 totalTimeout.ToString());
@@ -97,9 +95,8 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
             foreach (var category in categoryList)
             {
                 var counts = _countsByCategory[category];
-                // Format: {passed}/{wrong}/{exceptions}/{timeouts}
                 var countsStr =
-                    $"{counts.PassedCount}/{counts.WrongCount}/{counts.ExceptionCount}/{counts.TimeoutCount}";
+                    $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / ‼️ {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}";
                 dataRow.Add(countsStr);
             }
 
@@ -110,12 +107,11 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
     }
 
     // Configuration Constants
-    private const int NumberOfCases = 2;
+    private static readonly int NumberOfCases = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_CASES"));
     private const int RandomSeed = 10;
     private const string MdPath = "../../../../results.md";
-    private static readonly string[] MdHeaders = ["Name", "Passed", "Wrong", "Exceptions", "Timeouts"];
     private static readonly string Name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE")!;
-    private static readonly bool Global = false;
+    private static readonly bool Global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
     private Dictionary<string, TestOutcomeCounts> _countsByCategory = new Dictionary<string, TestOutcomeCounts>();
 
@@ -129,13 +125,6 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
 
 
     protected static readonly TProblem Problem = new();
-
-
-    // Counters to track test outcomes
-    private int _passedCount;
-    private int _exceptionCount;
-    private int _timeoutCount;
-    private int _wrongCount;
 
 
     [Test]

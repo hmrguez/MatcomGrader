@@ -7,11 +7,13 @@ var testPath = Path.Combine(basePath, "AutoGrader");
 var baseFilePath = Path.Combine(solutionsPath, "_base.cs");
 var resultPath = Path.Combine(basePath, "results.md");
 
-string[] headers = ["Name", "Passed", "Wrong", "Exceptions", "Timeout"];
+string[] headers = ["Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts"];
+// string[] headers = ["Name", "Category 2"];
 
-var mdWriter = new MarkdownWriter(resultPath, headers);
-
-mdWriter.ClearTable();
+if (File.Exists(resultPath))
+{
+    File.Delete(resultPath);
+}
 
 File.Delete(Path.Combine(testPath, "Solution.cs"));
 
@@ -36,6 +38,8 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
         UseShellExecute = false
     };
     psi.EnvironmentVariables["CURRENT_SOLUTION_FILE"] = fileName;
+    psi.EnvironmentVariables["GLOBAL"] = "TRUE";
+    psi.EnvironmentVariables["NUMBER_OF_CASES"] = "2";
 
     var process = Process.Start(psi);
     process.WaitForExit();
@@ -44,10 +48,12 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     var output = process.StandardOutput.ReadToEnd();
     var error = process.StandardError.ReadToEnd();
 
-    Console.WriteLine("Student: " + fileName + "\n" +  output);
+    Console.WriteLine("Student: " + fileName + "\n" + output);
 
     // Delete the copied file after testing
     File.Delete(destinationPath);
+
+    var mdWriter = new MarkdownWriter(resultPath, headers);
 
     var lastRow = mdWriter.ReadLastRow();
     if (!lastRow.Contains(fileName))
