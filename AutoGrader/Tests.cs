@@ -1,3 +1,4 @@
+using Common;
 using Exam;
 using Grader;
 
@@ -21,14 +22,17 @@ public class Tests
     
     /// <summary>
     ///     This method runs once after all tests in this fixture have executed.
-    ///     It's used for any necessary cleanup.
+    ///     It's used for any necessary cleanup and writing to the .md file.
     /// </summary>
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        // Your teardown code here
-        // For example, releasing shared resources or logging
-        TestContext.WriteLine("All tests in RegularTests have completed.");
+        const string mdPath = "../../../../results.md";
+        var mdwriter = new MarkdownWriter(mdPath, ["Name", "Test 1", "Test 2"]);
+
+        Console.WriteLine("DAs");
+        
+        mdwriter.AddRow("Jose", "1", "2");
     }
     
     /// <summary>
