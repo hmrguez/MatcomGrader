@@ -2,9 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatcomGrader", "MatcomGrader\MatcomGrader.csproj", "{A44C5ACA-2139-4E4A-B496-892D380E8C89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Grader", "Grader\Grader.csproj", "{5717D4FD-D355-41A7-BE2F-9956B9F5E493}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{8AC8CC54-ED7C-4D5D-B4A7-47E0DC81C932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoGrader", "AutoGrader\AutoGrader.csproj", "{BD72591C-6FD6-4F26-91D2-D3793B981B39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		{A44C5ACA-2139-4E4A-B496-892D380E8C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A44C5ACA-2139-4E4A-B496-892D380E8C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A44C5ACA-2139-4E4A-B496-892D380E8C89}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5717D4FD-D355-41A7-BE2F-9956B9F5E493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5717D4FD-D355-41A7-BE2F-9956B9F5E493}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5717D4FD-D355-41A7-BE2F-9956B9F5E493}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5717D4FD-D355-41A7-BE2F-9956B9F5E493}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8AC8CC54-ED7C-4D5D-B4A7-47E0DC81C932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8AC8CC54-ED7C-4D5D-B4A7-47E0DC81C932}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AC8CC54-ED7C-4D5D-B4A7-47E0DC81C932}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AC8CC54-ED7C-4D5D-B4A7-47E0DC81C932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD72591C-6FD6-4F26-91D2-D3793B981B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD72591C-6FD6-4F26-91D2-D3793B981B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD72591C-6FD6-4F26-91D2-D3793B981B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD72591C-6FD6-4F26-91D2-D3793B981B39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
