@@ -11,6 +11,18 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
     [TearDown]
     public void TearDown()
     {
+        // Retrieve the category of the current test
+        var categoryList = TestContext.CurrentContext.Test.Properties["Category"] as List<object>;
+        var category = (categoryList != null && categoryList.Count > 0) ? categoryList[0] as string : "Uncategorized";
+        
+        // Initialize counts for this category if not already present
+        if (!_countsByCategory.ContainsKey(category))
+        {
+            _countsByCategory[category] = new TestOutcomeCounts();
+        }
+
+        var counts = _countsByCategory[category];
+
         // Determine the outcome of the test
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
         var message = TestContext.CurrentContext.Result.Message;
@@ -18,45 +30,103 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
         switch (outcome)
         {
             case TestStatus.Passed:
-                _passedCount++;
+                counts.PassedCount++;
                 break;
             case TestStatus.Failed:
-                if (message!.Contains("TIMEOUT"))
-                    _timeoutCount++;
-                else if (message.Contains("WRONG"))
-                    _wrongCount++;
+                if (message != null && message.Contains("TIMEOUT"))
+                    counts.TimeoutCount++;
+                else if (message != null && message.Contains("WRONG"))
+                    counts.WrongCount++;
                 else
-                    _exceptionCount++;
-
+                    counts.ExceptionCount++;
                 break;
         }
-    }
 
+        Console.WriteLine();
+    }
 
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        var totalTests = NumberOfCases;
-        var totalCounted = _passedCount + _exceptionCount + _timeoutCount + _wrongCount;
-
-        if (totalCounted < totalTests)
+        if (Global)
         {
-            var difference = totalTests - totalCounted;
-            _exceptionCount += difference;
-        }
+            // Aggregate results across all categories
+            int totalPassed = 0;
+            int totalWrong = 0;
+            int totalException = 0;
+            int totalTimeout = 0;
 
-        var writer = new MarkdownWriter(MdPath, MdHeaders);
-        writer.AddRow(Name, _passedCount.ToString(),  _wrongCount.ToString(), _exceptionCount.ToString(), _timeoutCount.ToString());
+            foreach (var counts in _countsByCategory.Values)
+            {
+                totalPassed += counts.PassedCount;
+                totalWrong += counts.WrongCount;
+                totalException += counts.ExceptionCount;
+                totalTimeout += counts.TimeoutCount;
+            }
+
+            var totalTests = NumberOfCases;
+            var totalCounted = totalPassed + totalWrong + totalException + totalTimeout;
+
+            // Adjust for any discrepancies
+            if (totalCounted < totalTests)
+            {
+                var difference = totalTests - totalCounted;
+                totalException += difference;
+            }
+
+            // Write flat results
+            var mdHeaders = new[] { "Name", "✅ Passed", "⭕️Wrong", "‼️Exceptions", "⏰Timeouts" };
+            var writer = new MarkdownWriter(MdPath, mdHeaders);
+            writer.AddRow(Name, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
+                totalTimeout.ToString());
+        }
+        else
+        {
+            // Write grouped results by category
+            // Prepare headers
+            var headers = new List<string> { "Name" };
+            var categoryList = _countsByCategory.Keys.ToList();
+            categoryList.Sort(); // Optional: sort categories alphabetically
+
+            headers.AddRange(categoryList);
+            var writer = new MarkdownWriter(MdPath, headers.ToArray());
+
+            // Prepare data row
+            var dataRow = new List<string> { Name };
+
+            foreach (var category in categoryList)
+            {
+                var counts = _countsByCategory[category];
+                // Format: {passed}/{wrong}/{exceptions}/{timeouts}
+                var countsStr =
+                    $"{counts.PassedCount}/{counts.WrongCount}/{counts.ExceptionCount}/{counts.TimeoutCount}";
+                dataRow.Add(countsStr);
+            }
+
+            writer.AddRow(dataRow.ToArray());
+        }
 
         Console.WriteLine("Test summary written to results.md");
     }
 
     // Configuration Constants
-    private const int NumberOfCases = 10;
+    private const int NumberOfCases = 2;
     private const int RandomSeed = 10;
     private const string MdPath = "../../../../results.md";
     private static readonly string[] MdHeaders = ["Name", "Passed", "Wrong", "Exceptions", "Timeouts"];
     private static readonly string Name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE")!;
+    private static readonly bool Global = false;
+
+    private Dictionary<string, TestOutcomeCounts> _countsByCategory = new Dictionary<string, TestOutcomeCounts>();
+
+    private class TestOutcomeCounts
+    {
+        public int PassedCount { get; set; } = 0;
+        public int WrongCount { get; set; } = 0;
+        public int ExceptionCount { get; set; } = 0;
+        public int TimeoutCount { get; set; } = 0;
+    }
+
 
     protected static readonly TProblem Problem = new();
 
