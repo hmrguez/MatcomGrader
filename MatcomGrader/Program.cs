@@ -7,7 +7,7 @@ var testPath = Path.Combine(basePath, "AutoGrader");
 var baseFilePath = Path.Combine(solutionsPath, "_base.cs");
 var resultPath = Path.Combine(basePath, "results.md");
 
-string[] headers = ["Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts"];
+string[] headers = Constants.GlobalHeaders;
 
 if (File.Exists(resultPath))
 {
@@ -59,6 +59,7 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     {
         var toWrite = headers.Select(_ => "-").ToArray();
         toWrite[0] = fileName;
+        toWrite[1] = "🔴";
         mdWriter.AddRow(toWrite);
     }
 }

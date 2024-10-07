@@ -76,14 +76,20 @@ public abstract class GenericTest<TProblem, TOutput>
             // Write flat results
             var mdHeaders = new[] { "Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
             var writer = new MarkdownWriter(MdPath, mdHeaders);
-            writer.AddRow(Name, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
+            var score = "🔴";
+            if (totalCounted == totalPassed)
+            {
+                score = "🟢";
+            }
+
+            writer.AddRow(Name, score, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
                 totalTimeout.ToString());
         }
         else
         {
             // Write grouped results by category
             // Prepare headers
-            var headers = new List<string> { "Name" };
+            var headers = new List<string> { "Name", "Score" };
             var categoryList = _countsByCategory.Keys.ToList();
             categoryList.Sort(); // Optional: sort categories alphabetically
 
@@ -91,7 +97,7 @@ public abstract class GenericTest<TProblem, TOutput>
             var writer = new MarkdownWriter(MdPath, headers.ToArray());
 
             // Prepare data row
-            var dataRow = new List<string> { Name };
+            var dataRow = new List<string> { Name, "-" };
 
             foreach (var category in categoryList)
             {
@@ -115,16 +121,7 @@ public abstract class GenericTest<TProblem, TOutput>
     private static readonly bool Global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
     private readonly Dictionary<string, TestOutcomeCounts> _countsByCategory = new();
-
-    private class TestOutcomeCounts
-    {
-        public int PassedCount { get; set; }
-        public int WrongCount { get; set; }
-        public int ExceptionCount { get; set; }
-        public int TimeoutCount { get; set; }
-    }
-
-
+    
     protected static readonly TProblem Problem = new();
 
 
