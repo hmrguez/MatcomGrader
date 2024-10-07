@@ -79,6 +79,11 @@ public interface ITestProblem<TInput, TOutput>
    tester completo, ya que ejecuta los casos de pruebas que se hayan generado en este metodo. Se pasa un seed por si se
    usa un Random que los casos de pruebas sean uniformes
 
+## Casos manuales
+
+Ya se hablo de los casos autogenerados. Si se necesitan crear casos extras, se pueden hacer en la clase del archivo
+`AutoGrader/TestImplementation.cs`. Esta hereda de la clase abstracta generica para testear que tiene todos los metodos importantes, lo unico que tienes que hacer aqui es hacer los casos de prueba manuales. Usamos nUnit para el testeo y los Assert
+
 ## Como correr?
 
 ```bash
