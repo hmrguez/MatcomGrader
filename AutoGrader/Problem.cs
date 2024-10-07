@@ -38,6 +38,7 @@ public class MyProblem : ITestProblem<int, IStack>
 {
     public IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases)
     {
+        // yield return [new Input { a = a, k = k }];
         // var random = new Random(seed);
         //
         // for (int i = 0; i < numberOfCases; i++)
