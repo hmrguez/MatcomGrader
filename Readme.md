@@ -54,35 +54,41 @@ Luego se debe definir el problema. O sea en `AutoGrader/Problem.cs` hay una impl
 nuestro problema.
 
 ```csharp
-public interface ITestProblem<TInput, TOutput>
+public interface ITestProblem<TOutput>
 {
     IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases);
-    TOutput CorrectSolution(TInput input);
+    TOutput CorrectSolution(params object[] parameters);
 
-    TOutput StudentSolution(TInput input);
+    TOutput StudentSolution(params object[] parameters);
     
     bool CompareSolutions(TOutput expected, TOutput actual);
 }
 ```
 
-1. `TInput` es el tipo del parametro de entrada del problema (TODO implementar para varios parametros, de otra forma las
-   pruebas reciben un solo parametro y si hacen falta varios se hace una clase de wrapper) y `TOutput` es lo que debe
-   devolver la prueba
-2. `CorrectSolution` es obvio lo q es, la solucion nuestra del problema
+1. `TOutput` es lo que debe devolver la prueba
+2. `CorrectSolution` es obvio lo q es, la solucion nuestra del problema. Tanto aqui como en StudentSolution se pasan los
+   parametros como un array de object asi que es funcion de uno desempaquetarlos y castear adecuadamente
 3. `StudentSolution` es devolver la solucion de la plantilla de `AutoGrader/Solution.cs`, que en la mayoria de casos no
-   hay ni que hacerlo, pq todas las plantillas son iguales lo unico que cambia es los parametros
+   hay ni que hacerlo, pq todas las plantillas son iguales lo unico que cambia es los parametros, asi que lo mas
+   variable del metodo es cuando se desempaquetan los parametros
 4. `CompareSolutions` es el metodo que vamos a usar para comprobar que dos soluciones son correctas, o sea por ejemplo
    en problemas donde el resultado es int uno haria `return expected == actual`
 5. `GenerateTestCases` es el metodo que usamos para generar casos. Devuelve un IEnumerable de array de object que seria
-   un IEnumerable de los parametros de cada caso de prueba, o sea un IEnumerable de [input, expectedOutput]. En el
-   ejemplo se ve mas claro. Como funciona el tester es que por default solo rellenando esto ya deberia funcionar el
-   tester completo, ya que ejecuta los casos de pruebas que se hayan generado en este metodo. Se pasa un seed por si se
-   usa un Random que los casos de pruebas sean uniformes
+   un IEnumerable de los parametros de cada caso de prueba, o sea un IEnumerable de [parametros, expectedOutput].
+   `parametros` es a su vez un array de object y expectedOutput es del tipo `TOutput`. En el ejemplo se ve mas claro.
+   Como funciona el tester es que por default solo rellenando esto ya deberia funcionar el tester completo, ya que
+   ejecuta los casos de pruebas que se hayan generado en este metodo. Se pasa un seed por si se usa un Random que los
+   casos de pruebas sean uniformes
+
+Ademas se debe ir al archivo `AutoGrader/TestImplementation.cs` y en el ultimo tipo poner el tipo de resultado de la
+prueba. Por default lo tengo en `int`
 
 ## Casos manuales
 
 Ya se hablo de los casos autogenerados. Si se necesitan crear casos extras, se pueden hacer en la clase del archivo
-`AutoGrader/TestImplementation.cs`. Esta hereda de la clase abstracta generica para testear que tiene todos los metodos importantes, lo unico que tienes que hacer aqui es hacer los casos de prueba manuales. Usamos nUnit para el testeo y los Assert
+`AutoGrader/TestImplementation.cs`. Esta hereda de la clase abstracta generica para testear que tiene todos los metodos
+importantes, lo unico que tienes que hacer aqui es hacer los casos de prueba manuales. Usamos nUnit para el testeo y los
+Assert
 
 ## Como correr?
 

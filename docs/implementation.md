@@ -37,26 +37,27 @@ implementan manuales
 ## Problem
 
 ```csharp
-public class MyProblem : ITestProblem<int, IStack>
+public class MyProblem : ITestProblem<IStack>
 {
     public IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases)
     {
         return [];
     }
 
-    public IStack CorrectSolution(int input)
+    public IStack CorrectSolution(params object[] parameters)
     {
         return new StackImplementation();
     }
 
-    public IStack StudentSolution(int input)
+    public IStack StudentSolution(params object[] parameters)
     {
-        return Exam.Solution.Solve(input);
+        var a = (int)parameters[0]
+        return Exam.Solution.Solve(a);
     }
 
     public bool CompareSolutions(IStack expected, IStack actual)
     {
-        return expected == actual;
+        throw new Exception("No se me ocurre como compararlos");
     }
 }
 
@@ -90,7 +91,7 @@ using Exam;
 
 namespace AutoGrader;
 
-public class MyProblemTests : GenericTest<MyProblem, int, IStack>
+public class MyProblemTests : GenericTest<MyProblem, int, int>
 {
     [Test, Category("Category 2")]
     public void TestingPushPop()

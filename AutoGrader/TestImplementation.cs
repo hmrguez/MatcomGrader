@@ -1,5 +1,5 @@
 namespace AutoGrader;
 
-public class MyProblemTests : GenericTest<MyProblem, int, int>
+public class MyProblemTests : GenericTest<MyProblem, int>
 {
 }

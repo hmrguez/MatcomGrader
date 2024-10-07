@@ -5,7 +5,7 @@ using NUnit.Framework.Interfaces;
 namespace AutoGrader;
 
 [TestFixture]
-public abstract class GenericTest<TProblem, TInput, TOutput>
+public abstract class GenericTest<TProblem, TOutput>
     where TProblem : ITestProblem<TOutput>, new()
 {
     [TearDown]

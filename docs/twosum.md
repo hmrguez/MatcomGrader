@@ -6,24 +6,12 @@ Veamos el ejemplo del siguiente problema:
 
 ## Plantilla
 
-Como tenemos 2 parametros y el TODO no esta hecho todavia XD, creamos en otro archivo la clase de input
-
-```csharp
-namespace Exam; 
-
-public class Input {
-    public int[] a { get; }
-    public int k { get; }
-}
-
-```
-
 ```csharp
 namespace Exam;
 
 public static class Solution
 {
-    public static bool Solve(int Input)
+    public static bool Solve(int[] a, int k)
     {
         throw new NotImplementedException();
     }
@@ -40,7 +28,7 @@ Ahora como ya se menciono se copia la plantilla al `Solutions/_base.cs` y al `Au
 Ahora necesitamos hacer la implementacion del problema. Vamos a `AutoGrader/Problem.cs` y cambiamos la implementacion de `MyProblem`
 
 ```csharp
-public class MyProblem : ITestProblem<Input, bool>
+public class MyProblem : ITestProblem<bool>
 {
     public IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases)
     {
@@ -57,17 +45,20 @@ public class MyProblem : ITestProblem<Input, bool>
         }
     }
 
-    public bool CorrectSolution(Input input)
+    public bool CorrectSolution(params object[] parameters)
     {
         return ...;
     }
 
-    public bool StudentSolution(Input input)
+    public bool StudentSolution(params object[] parameters)
     {
-        return Exam.Solution.Solve(input);
+        var a = (int[])parameters[0];
+        var k = (int)parameters[1];
+        
+        return Exam.Solution.Solve(a, k);
     }
 
-    public bool CompareSolutions(IStack expected, IStack actual)
+    public bool CompareSolutions(int expected, int actual)
     {
         return expected == actual;
     }
