@@ -1,5 +1,3 @@
-;
-
 namespace Exam;
 
 public static class Solution

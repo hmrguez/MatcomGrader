@@ -12,8 +12,10 @@ public abstract class GenericTest<TProblem, TInput, TOutput>
     public void TearDown()
     {
         // Retrieve the category of the current test
-        var categoryList = TestContext.CurrentContext.Test.Properties["Category"] as List<object>;
-        var category = (categoryList != null && categoryList.Count > 0) ? categoryList[0] as string : "Uncategorized";
+        var category =
+            TestContext.CurrentContext.Test.Properties["Category"] is List<object> { Count: > 0 } categoryList
+                ? categoryList[0] as string
+                : "Uncategorized";
 
         // Initialize counts for this category if not already present
         if (!_countsByCategory.ContainsKey(category))

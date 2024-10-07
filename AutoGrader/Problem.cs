@@ -1,5 +1,4 @@
 using System.Collections;
-using Stackish;
 
 namespace AutoGrader;
 
@@ -12,57 +11,32 @@ public interface ITestProblem<TInput, TOutput>
     
     bool CompareSolutions(TOutput expected, TOutput actual);
 }
-
-
-
-public class StackImplementation : IStack
-{
-    private Stack<int> stack = new();
-
-    public void Push(int value)
-    {
-        stack.Push(value);
-    }
-
-    public int Pop()
-    {
-        if (stack.Count == 0)
-        {
-            return -1;
-        }
-        return stack.Pop();
-    }
-}
-
-public class MyProblem : ITestProblem<int, IStack>
+public class MyProblem : ITestProblem<int, int>
 {
     public IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases)
     {
-        // yield return [new Input { a = a, k = k }];
-        // var random = new Random(seed);
-        //
-        // for (int i = 0; i < numberOfCases; i++)
-        // {
-        //     int input = random.Next(1, 15); 
-        //     int expectedOutput = CorrectSolution(input);
-        //
-        //     yield return new object[] { input, expectedOutput };
-        // }
-
-        return [];
+        var random = new Random(seed);
+        
+        for (int i = 0; i < numberOfCases; i++)
+        {
+            int input = random.Next(1, 15); 
+            int expectedOutput = CorrectSolution(input);
+        
+            yield return new object[] { input, expectedOutput };
+        }
     }
 
-    public IStack CorrectSolution(int input)
+    public int CorrectSolution(int input)
     {
-        return new StackImplementation();
+        return input * 2;
     }
 
-    public IStack StudentSolution(int input)
+    public int StudentSolution(int input)
     {
         return Exam.Solution.Solve(input);
     }
 
-    public bool CompareSolutions(IStack expected, IStack actual)
+    public bool CompareSolutions(int expected, int actual)
     {
         return expected == actual;
     }
