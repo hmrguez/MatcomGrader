@@ -26,10 +26,7 @@ psi.EnvironmentVariables["NUMBER_OF_CASES"] = "2";
 Global acepta `TRUE` o `FALSE` y se refiere a como es el formateo del markdown, si es aplanado en plan `45/100` casos, o
 `10/30 para categoria 1 y 35/70 para categoria 2`. Mas de esto en [formateo](docs/format.md)
 
-NUMBER_OF_CASES es el total de casos de prueba ejecutado pero su uso es cuando se van a calcular los
-casos de prueba, el complemento de lo que no sea correcto, mal, exception o timeout se agrega a excepciones, TODO hay
-que hacer esto por el total de casos en el tester, pq de lo contrario este numero esta mal si le sumas lo siguiente.
-Ademas se usa para ver cuantos casos automaticos se generan.
+NUMBER_OF_CASES es se usa para ver cuantos casos automaticos se generan.
 
 Ademas en este archivo es "necesario" modificar esta linea
 

@@ -63,18 +63,10 @@ public abstract class GenericTest<TProblem, TOutput>
                 totalTimeout += counts.TimeoutCount;
             }
 
-            var totalTests = NumberOfCases;
             var totalCounted = totalPassed + totalWrong + totalException + totalTimeout;
 
-            // Adjust for any discrepancies
-            if (totalCounted < totalTests)
-            {
-                var difference = totalTests - totalCounted;
-                totalException += difference;
-            }
-
             // Write flat results
-            var mdHeaders = new[] { "Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
+            var mdHeaders = new[] { "Name", "Score", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
             var writer = new MarkdownWriter(MdPath, mdHeaders);
             var score = "🔴";
             if (totalCounted == totalPassed)
