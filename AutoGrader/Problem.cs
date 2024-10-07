@@ -5,9 +5,9 @@ namespace AutoGrader;
 public interface ITestProblem<TOutput>
 {
     IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases);
-    TOutput CorrectSolution(object[] parameters);
+    TOutput CorrectSolution(params object[] parameters);
 
-    TOutput StudentSolution(object[] parameters);
+    TOutput StudentSolution(params object[] parameters);
 
     bool CompareSolutions(TOutput expected, TOutput actual);
 }

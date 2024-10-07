@@ -8,7 +8,6 @@ var baseFilePath = Path.Combine(solutionsPath, "_base.cs");
 var resultPath = Path.Combine(basePath, "results.md");
 
 string[] headers = ["Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts"];
-// string[] headers = ["Name", "Category 2"];
 
 if (File.Exists(resultPath))
 {
@@ -38,7 +37,7 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
         UseShellExecute = false
     };
     psi.EnvironmentVariables["CURRENT_SOLUTION_FILE"] = fileName;
-    psi.EnvironmentVariables["GLOBAL"] = "FALSE";
+    psi.EnvironmentVariables["GLOBAL"] = "TRUE";
     psi.EnvironmentVariables["NUMBER_OF_CASES"] = "2";
 
     var process = Process.Start(psi);

@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using Common;
 using NUnit.Framework.Interfaces;
 
@@ -14,7 +13,7 @@ public abstract class GenericTest<TProblem, TOutput>
         // Retrieve the category of the current test
         var category =
             TestContext.CurrentContext.Test.Properties["Category"] is List<object> { Count: > 0 } categoryList
-                ? categoryList[0] as string
+                ? categoryList[0] as string ?? "Uncategorized"
                 : "Uncategorized";
 
         // Initialize counts for this category if not already present
@@ -115,14 +114,14 @@ public abstract class GenericTest<TProblem, TOutput>
     private static readonly string Name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE") ?? "..";
     private static readonly bool Global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
-    private Dictionary<string, TestOutcomeCounts> _countsByCategory = new Dictionary<string, TestOutcomeCounts>();
+    private readonly Dictionary<string, TestOutcomeCounts> _countsByCategory = new();
 
     private class TestOutcomeCounts
     {
-        public int PassedCount { get; set; } = 0;
-        public int WrongCount { get; set; } = 0;
-        public int ExceptionCount { get; set; } = 0;
-        public int TimeoutCount { get; set; } = 0;
+        public int PassedCount { get; set; }
+        public int WrongCount { get; set; }
+        public int ExceptionCount { get; set; }
+        public int TimeoutCount { get; set; }
     }
 
 
