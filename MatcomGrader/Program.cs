@@ -39,8 +39,8 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
         UseShellExecute = false
     };
     psi.EnvironmentVariables["CURRENT_SOLUTION_FILE"] = studentName;
-    psi.EnvironmentVariables["GLOBAL"] = "TRUE";
-    psi.EnvironmentVariables["NUMBER_OF_CASES"] = "2";
+    psi.EnvironmentVariables["GLOBAL"] = "FALSE";
+    psi.EnvironmentVariables["NUMBER_OF_CASES"] = "4";
 
     var process = Process.Start(psi);
     process.WaitForExit();

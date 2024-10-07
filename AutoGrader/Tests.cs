@@ -89,13 +89,17 @@ public abstract class GenericTest<TProblem, TOutput>
             var writer = new MarkdownWriter(MdPath, headers.ToArray());
 
             // Prepare data row
-            var dataRow = new List<string> { Name, "-" };
-
+            var dataRow = new List<string> { Name, "🟢" };
+            
             foreach (var category in categoryList)
             {
                 var counts = _countsByCategory[category];
                 var countsStr =
                     $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / ‼️ {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}";
+
+                if (counts.WrongCount != 0 || counts.ExceptionCount != 0 || counts.TimeoutCount != 0)
+                    dataRow[1] = "🔴";
+                
                 dataRow.Add(countsStr);
             }
 
