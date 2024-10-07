@@ -47,6 +47,8 @@ public abstract class GenericTest<TProblem, TOutput>
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
+        var score = Grader.Grade(_countsByCategory);
+
         if (Global)
         {
             // Aggregate results across all categories
@@ -63,17 +65,10 @@ public abstract class GenericTest<TProblem, TOutput>
                 totalTimeout += counts.TimeoutCount;
             }
 
-            var totalCounted = totalPassed + totalWrong + totalException + totalTimeout;
-
             // Write flat results
             var mdHeaders = new[] { "Name", "Score", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
             var writer = new MarkdownWriter(MdPath, mdHeaders);
-            var score = "🔴";
-            if (totalCounted == totalPassed)
-            {
-                score = "🟢";
-            }
-
+            
             writer.AddRow(Name, score, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
                 totalTimeout.ToString());
         }
@@ -83,25 +78,17 @@ public abstract class GenericTest<TProblem, TOutput>
             // Prepare headers
             var headers = new List<string> { "Name", "Score" };
             var categoryList = _countsByCategory.Keys.ToList();
-            categoryList.Sort(); // Optional: sort categories alphabetically
+            categoryList.Sort(); 
 
             headers.AddRange(categoryList);
             var writer = new MarkdownWriter(MdPath, headers.ToArray());
 
             // Prepare data row
-            var dataRow = new List<string> { Name, "🟢" };
-            
-            foreach (var category in categoryList)
-            {
-                var counts = _countsByCategory[category];
-                var countsStr =
-                    $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / ‼️ {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}";
-
-                if (counts.WrongCount != 0 || counts.ExceptionCount != 0 || counts.TimeoutCount != 0)
-                    dataRow[1] = "🔴";
-                
-                dataRow.Add(countsStr);
-            }
+            var dataRow = new List<string> { Name, score };
+            dataRow.AddRange(categoryList
+                .Select(category => _countsByCategory[category])
+                .Select(counts =>
+                    $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / ‼️ {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}"));
 
             writer.AddRow(dataRow.ToArray());
         }
@@ -117,7 +104,7 @@ public abstract class GenericTest<TProblem, TOutput>
     private static readonly bool Global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
     private readonly Dictionary<string, TestOutcomeCounts> _countsByCategory = new();
-    
+
     protected static readonly TProblem Problem = new();
 
 

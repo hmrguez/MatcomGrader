@@ -95,6 +95,7 @@ dotnet run --project MatcomGrader/
 
 ## FAQ
 
+- [Grader](docs/grader.md)
 - [Formateo del MD](docs/format.md)
 - [Ejemplo de TwoSum](docs/twosum.md)
 - [Ejemplo de Implementacion](docs/implementation.md)

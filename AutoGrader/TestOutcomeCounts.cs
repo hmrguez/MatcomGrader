@@ -1,6 +1,6 @@
 namespace AutoGrader;
 
-internal class TestOutcomeCounts
+public class TestOutcomeCounts
 {
     public int PassedCount { get; set; }
     public int WrongCount { get; set; }

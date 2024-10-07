@@ -6,7 +6,7 @@ Los casos de pruebas se pueden agrupar por categorias. Esto es util pq por ejemp
 gente que saquen 3, otros para la barrera del 4 y otros para el 5, y de esta forma se pueden ver quienes entran en cada
 caso.
 
-Esto se hace usando el atributo category arriba de un caso de pruebas. Por ejemplo
+Esto se hace usando el atributo `Category` arriba de un caso de pruebas. Por ejemplo
 
 ```csharp
 [Test, Category("Good Guys")]
@@ -31,3 +31,4 @@ No global significa que los casos de prueba que esten agrupados se mostraran agr
 | Name                  | Score | Good Guys               |
 |-----------------------|-------|-------------------------|
 | Hector Rodriguez d.cs | 🟢    | ✅ 2 / ⭕️ 0 / ‼️ 0 / ⏰ 0 |
+
