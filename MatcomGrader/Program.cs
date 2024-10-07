@@ -19,6 +19,8 @@ File.Delete(Path.Combine(testPath, "Solution.cs"));
 foreach (var filePath in Directory.GetFiles(solutionsPath))
 {
     var fileName = Path.GetFileName(filePath);
+    var studentName = Utils.StudentNameFromFile(fileName);
+
 
     if (fileName.StartsWith("_base.cs") || fileName.StartsWith('.'))
         continue;
@@ -36,7 +38,7 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
         RedirectStandardError = true,
         UseShellExecute = false
     };
-    psi.EnvironmentVariables["CURRENT_SOLUTION_FILE"] = fileName;
+    psi.EnvironmentVariables["CURRENT_SOLUTION_FILE"] = studentName;
     psi.EnvironmentVariables["GLOBAL"] = "TRUE";
     psi.EnvironmentVariables["NUMBER_OF_CASES"] = "2";
 
@@ -47,7 +49,8 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     var output = process.StandardOutput.ReadToEnd();
     var error = process.StandardError.ReadToEnd();
 
-    Console.WriteLine("Student: " + fileName + "\n" + output);
+
+    Console.WriteLine("Student: " + studentName + "\n" + output);
 
     // Delete the copied file after testing
     File.Delete(destinationPath);
@@ -55,10 +58,10 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     var mdWriter = new MarkdownWriter(resultPath, headers);
 
     var lastRow = mdWriter.ReadLastRow();
-    if (!lastRow.Contains(fileName))
+    if (!lastRow.Contains(studentName))
     {
         var toWrite = headers.Select(_ => "-").ToArray();
-        toWrite[0] = fileName;
+        toWrite[0] = studentName;
         toWrite[1] = "🔴";
         mdWriter.AddRow(toWrite);
     }

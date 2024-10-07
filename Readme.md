@@ -24,7 +24,7 @@ psi.EnvironmentVariables["NUMBER_OF_CASES"] = "2";
 ```
 
 Global acepta `TRUE` o `FALSE` y se refiere a como es el formateo del markdown, si es aplanado en plan `45/100` casos, o
-`10/30 para categoria 1 y 35/70 para categoria 2`. Mas de esto en el epigrafe de formateo
+`10/30 para categoria 1 y 35/70 para categoria 2`. Mas de esto en [formateo](docs/format.md)
 
 NUMBER_OF_CASES es el total de casos de prueba ejecutado pero su uso es cuando se van a calcular los
 casos de prueba, el complemento de lo que no sea correcto, mal, exception o timeout se agrega a excepciones, TODO hay
@@ -34,7 +34,7 @@ Ademas se usa para ver cuantos casos automaticos se generan.
 Ademas en este archivo es "necesario" modificar esta linea
 
 ```csharp
-string[] headers = ["Name", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts"];
+string[] headers = Constants.GlobalHeaders;
 ```
 
 Aqui se especifican las columnas del markdown. Por lo general se generan automaticamente pero si la primera prueba tiene
