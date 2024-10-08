@@ -5,7 +5,7 @@ var basePath = Path.Combine(Directory.GetCurrentDirectory());
 var solutionsPath = Path.Combine(basePath, "Solutions");
 var testPath = Path.Combine(basePath, "AutoGrader");
 var baseFilePath = Path.Combine(solutionsPath, "_base.cs");
-var resultPath = Path.Combine(basePath, "results.md");
+var resultPath = Path.Combine(basePath, Constants.ResultFileName);
 
 string[] headers = Constants.GlobalHeaders;
 

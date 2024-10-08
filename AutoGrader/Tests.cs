@@ -99,7 +99,7 @@ public abstract class GenericTest<TProblem, TOutput>
     // Configuration Constants
     private static readonly int NumberOfCases = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_CASES") ?? "2");
     private const int RandomSeed = 10;
-    private const string MdPath = "../../../../results.md";
+    private static readonly string MdPath = "../../../../" + Constants.ResultFileName;
     private static readonly string Name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE") ?? "..";
     private static readonly bool Global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
