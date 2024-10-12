@@ -93,6 +93,10 @@ Assert
 dotnet run --project MatcomGrader/
 ```
 
+Por peticion extra el repositorio tiene un workflow de github actions que ejecuta ese comando cuando detecta un cambio
+en la carpeta de Solutions. De esta forma imprime la tabla de resultados como el summary del run y tambien deja el
+archivo como un artifact, por si alguien lo quiere descargar
+
 ## FAQ
 
 - [Grader](docs/grader.md)
