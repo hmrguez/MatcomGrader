@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace AutoGrader;
 
 public interface ITestProblem<TOutput>

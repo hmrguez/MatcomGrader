@@ -49,7 +49,7 @@ public abstract class GenericTest<TProblem, TOutput>
     {
         var score = Grader.Grade(_countsByCategory);
 
-        if (Global)
+        if (_global)
         {
             // Aggregate results across all categories
             int totalPassed = 0;
@@ -67,9 +67,9 @@ public abstract class GenericTest<TProblem, TOutput>
 
             // Write flat results
             var mdHeaders = new[] { "Name", "Score", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
-            var writer = new MarkdownWriter(MdPath, mdHeaders);
+            var writer = new MarkdownWriter(_mdPath, mdHeaders);
             
-            writer.AddRow(Name, score, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
+            writer.AddRow(_name, score, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
                 totalTimeout.ToString());
         }
         else
@@ -81,10 +81,10 @@ public abstract class GenericTest<TProblem, TOutput>
             categoryList.Sort(); 
 
             headers.AddRange(categoryList);
-            var writer = new MarkdownWriter(MdPath, headers.ToArray());
+            var writer = new MarkdownWriter(_mdPath, headers.ToArray());
 
             // Prepare data row
-            var dataRow = new List<string> { Name, score };
+            var dataRow = new List<string> { _name, score };
             dataRow.AddRange(categoryList
                 .Select(category => _countsByCategory[category])
                 .Select(counts =>
@@ -97,11 +97,11 @@ public abstract class GenericTest<TProblem, TOutput>
     }
 
     // Configuration Constants
+    private static readonly int RandomSeed = 10;
     private static readonly int NumberOfCases = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_CASES") ?? "2");
-    private const int RandomSeed = 10;
-    private static readonly string MdPath = "../../../../" + Constants.ResultFileName;
-    private static readonly string Name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE") ?? "..";
-    private static readonly bool Global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
+    private readonly string _mdPath = "../../../../" + Constants.ResultFileName;
+    private readonly string _name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE") ?? "..";
+    private readonly bool _global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
     private readonly Dictionary<string, TestOutcomeCounts> _countsByCategory = new();
 

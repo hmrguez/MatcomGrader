@@ -52,7 +52,7 @@ public class MarkdownWriter
             string line;
 
             // Read lines until header line is found
-            while ((line = reader.ReadLine()) != null)
+            while ((line = reader.ReadLine()!) != null)
             {
                 line = line.Trim();
                 if (line.StartsWith("|") && !string.IsNullOrWhiteSpace(line))
@@ -61,7 +61,7 @@ public class MarkdownWriter
                     _headers = line.Trim('|').Split('|').Select(h => h.Trim()).ToArray();
 
                     // Read the separator line
-                    line = reader.ReadLine();
+                    line = reader.ReadLine()!;
                     if (line == null || !line.StartsWith("|"))
                         throw new InvalidOperationException("Invalid markdown table format: Missing separator line.");
 
@@ -103,7 +103,7 @@ public class MarkdownWriter
                 $"Number of values ({values.Length}) does not match number of headers ({_headers.Length}).",
                 nameof(values));
 
-        string row = "| " + string.Join(" | ", values.Select(v => v ?? string.Empty)) + " |";
+        string row = "| " + string.Join(" | ", values.Select(v => v)) + " |";
 
         // Append the row to the file in a thread-safe manner
         lock (_lock)
@@ -147,7 +147,7 @@ public class MarkdownWriter
     /// </summary>
     public string ReadLastRow()
     {
-        string lastLine = null;
+        string lastLine = null!;
         if (File.Exists(_filePath))
         {
             var lines = File.ReadAllLines(_filePath);

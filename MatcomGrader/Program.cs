@@ -43,11 +43,11 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     psi.EnvironmentVariables["NUMBER_OF_CASES"] = "4";
 
     var process = Process.Start(psi);
-    process.WaitForExit();
+    process!.WaitForExit();
 
     // Handle output or errors if needed
     var output = process.StandardOutput.ReadToEnd();
-    var error = process.StandardError.ReadToEnd();
+    // var error = process.StandardError.ReadToEnd();
 
 
     Console.WriteLine("Student: " + studentName + "\n" + output);
