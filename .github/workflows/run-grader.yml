@@ -1,0 +1,27 @@
+name: Run MatcomGrader and Upload Results
+
+on:
+  push:
+    paths:
+      - 'Solutions/**'
+
+jobs:
+  run-matcomgrader:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # Specify your .NET version here
+
+      - name: Run MatcomGrader
+        run: dotnet run --project MatcomGrader
+
+      - name: Upload results.md as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: results
+          path: results.md
