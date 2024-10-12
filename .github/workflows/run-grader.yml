@@ -20,6 +20,9 @@ jobs:
       - name: Run MatcomGrader
         run: dotnet run --project MatcomGrader
 
+      - name: Temp
+        run: ls
+
       - name: Upload results.md as Artifact
         uses: actions/upload-artifact@v3
         with:
