@@ -15,16 +15,20 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x' # Specify your .NET version here
+          dotnet-version: '8.0.x' 
 
       - name: Run MatcomGrader
         run: dotnet run --project MatcomGrader
-
-      - name: Temp
-        run: ls
 
       - name: Upload results.md as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: results
           path: results.md
+
+      - name: Display results.md in Job Summary
+        if: always() 
+        run: |
+          echo "# MatcomGrader Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat results.md >> $GITHUB_STEP_SUMMARY
