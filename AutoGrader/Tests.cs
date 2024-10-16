@@ -88,7 +88,7 @@ public abstract class GenericTest<TProblem, TOutput>
             dataRow.AddRange(categoryList
                 .Select(category => _countsByCategory[category])
                 .Select(counts =>
-                    $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / ‼️ {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}"));
+                    $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / 💥 {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}"));
 
             writer.AddRow(dataRow.ToArray());
         }
