@@ -4,6 +4,12 @@ on:
   push:
     paths:
       - 'Solutions/**'
+  workflow_dispatch:
+    inputs:
+      custom_param:
+        description: 'A custom parameter for the workflow'
+        required: false
+        default: 'default_value'
 
 jobs:
   run-matcomgrader:
@@ -15,10 +21,12 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x' 
+          dotnet-version: '8.0.x'
 
       - name: Run MatcomGrader
-        run: dotnet run --project MatcomGrader
+        run: |
+          PARAM=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.custom_param || 'default_value' }}
+          dotnet run --project MatcomGrader -- $PARAM
 
       - name: Upload results.md as Artifact
         uses: actions/upload-artifact@v3
@@ -26,9 +34,37 @@ jobs:
           name: results
           path: results.md
 
-      - name: Display results.md in Job Summary
-        if: always() 
+  format-results:
+    needs: run-matcomgrader
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download results.md Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: results
+          path: ./artifact
+
+      - name: Setup Node.js for Prettier
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Prettier
+        run: npm install --global prettier
+
+      - name: Format results.md
         run: |
-          echo "# MatcomGrader Results" >> $GITHUB_STEP_SUMMARY
+          prettier --write ./artifact/results.md
+
+      - name: Upload Formatted results.md as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: formatted-results
+          path: ./artifact/results.md
+
+      - name: Display Formatted results.md in Job Summary
+        if: always()
+        run: |
+          echo "# MatcomGrader Results (Formatted)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          cat results.md >> $GITHUB_STEP_SUMMARY
+          cat ./artifact/results.md >> $GITHUB_STEP_SUMMARY
