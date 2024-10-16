@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "# MatcomGrader Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          cat ./artifact/results.md >> $GITHUB_STEP_SUMMARY
+          cat ./results.md >> $GITHUB_STEP_SUMMARY
 
 #  format-results:
 #    needs: run-matcomgrader
