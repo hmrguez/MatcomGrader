@@ -1,5 +1,7 @@
 namespace AutoGrader;
 
+
+
 public interface ITestProblem<TOutput>
 {
     IEnumerable<object[]> GenerateTestCases(int seed, int numberOfCases);
@@ -35,8 +37,9 @@ public class MyProblem : ITestProblem<int>
 
     public int StudentSolution(params object[] parameters)
     {
-        var a = (int)parameters[0];
-        var b = (int)parameters[1];
+        // Can't cast directly to int, don't know why
+        var a = Convert.ToInt32(parameters[0]);
+        var b = Convert.ToInt32(parameters[1]);
 
         return Exam.Solution.Solve(a, b);
     }

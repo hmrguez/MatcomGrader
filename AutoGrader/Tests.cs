@@ -1,4 +1,5 @@
 using Common;
+using Newtonsoft.Json;
 using NUnit.Framework.Interfaces;
 
 namespace AutoGrader;
@@ -68,7 +69,7 @@ public abstract class GenericTest<TProblem, TOutput>
             // Write flat results
             var mdHeaders = new[] { "Name", "Score", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
             var writer = new MarkdownWriter(_mdPath, mdHeaders);
-            
+
             writer.AddRow(_name, score, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
                 totalTimeout.ToString());
         }
@@ -78,7 +79,7 @@ public abstract class GenericTest<TProblem, TOutput>
             // Prepare headers
             var headers = new List<string> { "Name", "Score" };
             var categoryList = _countsByCategory.Keys.ToList();
-            categoryList.Sort(); 
+            categoryList.Sort();
 
             headers.AddRange(categoryList);
             var writer = new MarkdownWriter(_mdPath, headers.ToArray());
@@ -100,6 +101,7 @@ public abstract class GenericTest<TProblem, TOutput>
     private static readonly int RandomSeed = 10;
     private static readonly int NumberOfCases = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_CASES") ?? "2");
     private readonly string _mdPath = "../../../../" + Constants.ResultFileName;
+    private static readonly string _cachedResultPath = "../../../../output/cached-results.md";
     private readonly string _name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE") ?? "..";
     private readonly bool _global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
@@ -126,11 +128,69 @@ public abstract class GenericTest<TProblem, TOutput>
             Assert.Fail("TIMEOUT");
         }
     }
-
-    private static IEnumerable<TestCaseData> GetTestCases()
+    
+    public static IEnumerable<TestCaseData> GetTestCases()
     {
+        List<TestCase> testCases;
+
+        if (File.Exists(_cachedResultPath))
+        {
+            // Cache file exists; load test cases from it
+            testCases = LoadTestCasesFromJson();
+            Console.WriteLine("Loaded test cases from cache.");
+        }
+        else
+        {
+            // Cache file does not exist; generate new test cases
+            testCases = GenerateAndCacheTestCases();
+            Console.WriteLine("Generated and cached new test cases.");
+        }
+
+        // Convert TestCase objects to TestCaseData
+        foreach (var testCase in testCases)
+        {
+            yield return (new TestCaseData(testCase.Parameters, testCase.ExpectedResult)
+                .SetName($"TestCase_{testCase.Index}"));
+        }
+    }
+    
+    public record TestCase(object[] Parameters, TOutput ExpectedResult, object Index);
+
+
+    private static List<TestCase> GenerateAndCacheTestCases()
+    {
+        List<TestCase> testCases = new List<TestCase>(NumberOfCases);
+        int index = 0;
+
         foreach (var testCase in Problem.GenerateTestCases(RandomSeed, NumberOfCases))
-            yield return new TestCaseData(testCase[0], testCase[1])
-                .SetName($"Input_{testCase[0]}_Expected_{testCase[1]}");
+        {
+            testCases.Add(new TestCase((object[])testCase[0], (TOutput)testCase[1], index++));
+        }
+
+        SaveTestCasesToJson(testCases);
+        return testCases;
+    }
+
+    private static void SaveTestCasesToJson(IEnumerable<TestCase> testCases)
+    {
+        var directory = Path.GetDirectoryName(_cachedResultPath);
+
+        // Ensure the directory exists
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+
+        // Serialize the test cases to JSON
+        var json = JsonConvert.SerializeObject(testCases, Formatting.Indented);
+        File.WriteAllText(_cachedResultPath, json);
+    }
+
+    private static List<TestCase> LoadTestCasesFromJson()
+    {
+        var json = File.ReadAllText(_cachedResultPath);
+        return JsonConvert.DeserializeObject<List<TestCase>>(json) 
+               ?? new List<TestCase>();
     }
 }
