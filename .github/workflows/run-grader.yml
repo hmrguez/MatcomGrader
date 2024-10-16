@@ -27,19 +27,6 @@ jobs:
         run: |
           PARAM=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.custom_param || 'default_value' }}
           dotnet run --project MatcomGrader -- $PARAM
-          
-
-      - name: Setup Node.js for Prettier
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          
-      - name: Install Prettier
-        run: npm install --global prettier
-
-      - name: Format results.md
-        run: |
-          prettier --write ./results.md
 
       - name: Upload results.md as Artifact
         uses: actions/upload-artifact@v3
@@ -47,44 +34,37 @@ jobs:
           name: results
           path: results.md
 
+  format-results:
+    needs: run-matcomgrader
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download results.md Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: results
+          path: ./artifact
+
+      - name: Setup Node.js for Prettier
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Prettier
+        run: npm install --global prettier
+
+      - name: Format results.md
+        run: |
+          prettier --write ./artifact/results.md
+
+      - name: Upload Formatted results.md as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: formatted-results
+          path: ./artifact/results.md
+
       - name: Display Formatted results.md in Job Summary
         if: always()
         run: |
-          echo "# MatcomGrader Results" >> $GITHUB_STEP_SUMMARY
+          echo "# MatcomGrader Results (Formatted)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          cat ./results.md >> $GITHUB_STEP_SUMMARY
-
-#  format-results:
-#    needs: run-matcomgrader
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Download results.md Artifact
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: results
-#          path: ./artifact
-#
-#      - name: Setup Node.js for Prettier
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: '16'
-#
-#      - name: Install Prettier
-#        run: npm install --global prettier
-#
-#      - name: Format results.md
-#        run: |
-#          prettier --write ./artifact/results.md
-#
-#      - name: Upload Formatted results.md as Artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: formatted-results
-#          path: ./artifact/results.md
-#
-#      - name: Display Formatted results.md in Job Summary
-#        if: always()
-#        run: |
-#          echo "# MatcomGrader Results (Formatted)" >> $GITHUB_STEP_SUMMARY
-#          echo "" >> $GITHUB_STEP_SUMMARY
-#          cat ./artifact/results.md >> $GITHUB_STEP_SUMMARY
+          cat ./artifact/results.md >> $GITHUB_STEP_SUMMARY
