@@ -24,7 +24,7 @@ jobs:
 
       - name: Run MatcomGrader
         run: |
-          PARAM=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.specific_tests || 'default_value' }}
+          PARAM=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.specific_tests }}
           dotnet run --project MatcomGrader -- $PARAM
 
       - name: Upload results.md as Artifact
