@@ -41,23 +41,26 @@ foreach (var filePath in Directory.GetFiles(solutionsPath))
     psi.EnvironmentVariables["CURRENT_SOLUTION_FILE"] = studentName;
     psi.EnvironmentVariables["GLOBAL"] = "FALSE";
     psi.EnvironmentVariables["NUMBER_OF_CASES"] = "4";
-    // psi.EnvironmentVariables["SPECIFIC_TEST_CASES"] = "";
-
+    
+    if(args.Length > 0) psi.EnvironmentVariables["SPECIFIC_TEST_CASES"] = args[0];
+    
+    
+    
     var process = Process.Start(psi);
     process!.WaitForExit();
-
+    
     // Handle output or errors if needed
     var output = process.StandardOutput.ReadToEnd();
     // var error = process.StandardError.ReadToEnd();
-
-
+    
+    
     Console.WriteLine("Student: " + studentName + "\n" + output);
-
+    
     // Delete the copied file after testing
     File.Delete(destinationPath);
-
+    
     var mdWriter = new MarkdownWriter(resultPath, headers);
-
+    
     var lastRow = mdWriter.ReadLastRow();
     if (!lastRow.Contains(studentName))
     {
