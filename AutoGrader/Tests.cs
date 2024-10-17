@@ -100,6 +100,7 @@ public abstract class GenericTest<TProblem, TOutput>
     // Configuration Constants
     private static readonly int RandomSeed = 10;
     private static readonly int NumberOfCases = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_CASES") ?? "2");
+    private static readonly string[] SpecificTestCases = Environment.GetEnvironmentVariable("SPECIFIC_TEST_CASES")?.Split(",", StringSplitOptions.RemoveEmptyEntries) ?? []; 
     private readonly string _mdPath = "../../../../" + Constants.ResultFileName;
     private static readonly string _cachedResultPath = "../../../../output/cached-results.md";
     private readonly string _name = Environment.GetEnvironmentVariable("CURRENT_SOLUTION_FILE") ?? "..";
@@ -190,7 +191,19 @@ public abstract class GenericTest<TProblem, TOutput>
     private static List<TestCase> LoadTestCasesFromJson()
     {
         var json = File.ReadAllText(_cachedResultPath);
-        return JsonConvert.DeserializeObject<List<TestCase>>(json) 
+        var deserialized = JsonConvert.DeserializeObject<List<TestCase>>(json) 
                ?? new List<TestCase>();
+
+        if (SpecificTestCases.Length == 0)
+            return deserialized;
+
+
+        var result = new List<TestCase>();
+        foreach (var specificTestCase in SpecificTestCases.Select(x=>int.Parse(x)))
+        {
+            result.Add(deserialized[specificTestCase]);
+        }
+
+        return result;
     }
 }

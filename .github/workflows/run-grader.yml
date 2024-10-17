@@ -6,10 +6,9 @@ on:
       - 'Solutions/**'
   workflow_dispatch:
     inputs:
-      custom_param:
-        description: 'A custom parameter for the workflow'
+      specific_tests:
+        description: 'Comma separated specific test cases to run'
         required: false
-        default: 'default_value'
 
 jobs:
   run-matcomgrader:
@@ -25,7 +24,7 @@ jobs:
 
       - name: Run MatcomGrader
         run: |
-          PARAM=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.custom_param || 'default_value' }}
+          PARAM=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.specific_tests || 'default_value' }}
           dotnet run --project MatcomGrader -- $PARAM
 
       - name: Upload results.md as Artifact
