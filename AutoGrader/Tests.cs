@@ -41,6 +41,9 @@ public abstract class GenericTest<TProblem, TOutput>
                     counts.WrongCount++;
                 else
                     counts.ExceptionCount++;
+                
+                _failedTestCases.Add(TestContext.CurrentContext.Test.Name.Replace("TestCase_", ""));
+                
                 break;
         }
     }
@@ -67,11 +70,11 @@ public abstract class GenericTest<TProblem, TOutput>
             }
 
             // Write flat results
-            var mdHeaders = new[] { "Name", "Score", "✅ Passed", "⭕️ Wrong", "‼️ Exceptions", "⏰ Timeouts" };
+            var mdHeaders = Constants.GlobalHeaders;
             var writer = new MarkdownWriter(_mdPath, mdHeaders);
 
             writer.AddRow(_name, score, totalPassed.ToString(), totalWrong.ToString(), totalException.ToString(),
-                totalTimeout.ToString());
+                totalTimeout.ToString(), string.Join(", ", _failedTestCases));
         }
         else
         {
@@ -82,6 +85,7 @@ public abstract class GenericTest<TProblem, TOutput>
             categoryList.Sort();
 
             headers.AddRange(categoryList);
+            headers.Add(Constants.GlobalHeaders[^1]);
             var writer = new MarkdownWriter(_mdPath, headers.ToArray());
 
             // Prepare data row
@@ -91,6 +95,8 @@ public abstract class GenericTest<TProblem, TOutput>
                 .Select(counts =>
                     $"✅ {counts.PassedCount} / ⭕️ {counts.WrongCount} / 💥 {counts.ExceptionCount} / ⏰ {counts.TimeoutCount}"));
 
+            dataRow.Add(string.Join(", ", _failedTestCases));
+            
             writer.AddRow(dataRow.ToArray());
         }
 
@@ -107,6 +113,7 @@ public abstract class GenericTest<TProblem, TOutput>
     private readonly bool _global = Environment.GetEnvironmentVariable("GLOBAL")! == "TRUE";
 
     private readonly Dictionary<string, TestOutcomeCounts> _countsByCategory = new();
+    private List<string> _failedTestCases = [];
 
     protected static readonly TProblem Problem = new();
 
